@@ -11,7 +11,7 @@ class Ship{
                 target.hull = target.hull - this.firepower
                 console.log(`${this.name} hit ${target.name} for ${this.firepower} much damage!`)
             } else {
-                console.log(`You missed ${target.name}.`)
+                console.log(`${this.name} missed ${target.name}.`)
             }
         }
         else if( this.hull <= 0){
@@ -51,23 +51,30 @@ game = {  // game will be set up inside one full game property
     shieldRegenAmt: 0,
 
     startGame() { 
-        let which = 0;
+        let which1 = 0;
+        let which2 = 1;
         fleet.generateFleet();
         while (game.playing) {
-            game.round(which);
-                which++;
+            game.round(which1,which2);
+                which1+=2;
+                which2+=2;
             }
         },
 
 
-    round(index) {//two parameters to represent two alien ships
-        if(fleet.aliens.length <= index){
+    round(index1,index2) {//two parameters to represent two alien ships
+        if(fleet.aliens.length <= index1 && fleet.aliens.length <= index2){
             console.log("You Win!")
             game.playing = false
         } 
-        while( (game.playing === true) && (ussAssembly.hull > 0) && (fleet.aliens[index].hull > 0)) {
-            ussAssembly.attack(fleet.aliens[index]);
-            fleet.aliens[index].attack(ussAssembly);
+        while( (game.playing === true) && (ussAssembly.hull > 0) && (fleet.aliens[index1].hull > 0 || fleet.aliens[index2].hull > 0)) {
+            if(fleet.aliens[index1].hull > 0) {
+                ussAssembly.attack(fleet.aliens[index1]);
+            } else {
+                ussAssembly.attack(fleet.aliens[index2])
+            }
+            fleet.aliens[index1].attack(ussAssembly);
+            fleet.aliens[index2].attack(ussAssembly);
             //your shields regenerate
             shieldRegenAmt = Math.floor(Math.random()*3)
             ussAssembly.hull += shieldRegenAmt;
@@ -75,13 +82,13 @@ game = {  // game will be set up inside one full game property
         if(ussAssembly.hull <= 0) {
             console.log("LOSER")
             game.playing = false
-        } else if(fleet.aliens[index].hull <= 0){
+        } else if(fleet.aliens[index1].hull <= 0 && fleet.aliens[index2].hull <= 0){
             if(ussAssembly.hull <= 5){
                 console.log("Retreat");
                 game.playing = false
 
             } else {
-                console.log("Next alien coming");
+                console.log("Next aliens coming");
             } 
 
         }
