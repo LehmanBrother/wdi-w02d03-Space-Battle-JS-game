@@ -48,6 +48,7 @@ const ussAssembly = new Ship (20, 5, .7, "Uss Assembly");
 
 game = {  // game will be set up inside one full game property
     playing: true,
+    shieldRegenAmt: 0,
 
     startGame() { 
         let which = 0;
@@ -59,7 +60,7 @@ game = {  // game will be set up inside one full game property
         },
 
 
-    round(index) {
+    round(index) {//two parameters to represent two alien ships
         if(fleet.aliens.length <= index){
             console.log("You Win!")
             game.playing = false
@@ -67,6 +68,10 @@ game = {  // game will be set up inside one full game property
         while( (game.playing === true) && (ussAssembly.hull > 0) && (fleet.aliens[index].hull > 0)) {
             ussAssembly.attack(fleet.aliens[index]);
             fleet.aliens[index].attack(ussAssembly);
+            //your shields regenerate
+            shieldRegenAmt = Math.floor(Math.random()*3)
+            ussAssembly.hull += shieldRegenAmt;
+            console.log("Your shields regenerate your hull by " + shieldRegenAmt + ".");
         if(ussAssembly.hull <= 0) {
             console.log("LOSER")
             game.playing = false
@@ -87,4 +92,4 @@ game = {  // game will be set up inside one full game property
 }
 
 
-game.startGame(fleet.generateFleet(6));
+game.startGame(fleet.generateFleet(Math.floor(Math.random()*7)+4));//random number of enemy ships at start
